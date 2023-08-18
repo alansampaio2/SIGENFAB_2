@@ -1,0 +1,44 @@
+﻿@typeparam Titem
+
+@if(MinhaLista is null)
+{
+    @if(Carregando is null)
+    {
+        <div class="align-items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" />
+        </div>
+    }
+    else
+    {
+        @Carregando
+    }
+}
+else if(MinhaLista.Count == 0)
+{
+    @if(SemRegistros is null)
+    {
+        <p>Não há Registros para Mostrar...</p>
+    }
+    else
+    {
+        @SemRegistros
+    }
+}
+else
+{
+ @Body   
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? Carregando { get; set; }
+
+    [Parameter]
+    public RenderFragment? SemRegistros { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Body { get; set; } = null!;
+    [Parameter]
+    [EditorRequired]
+    public List<Titem> MinhaLista { get; set; } = null!;
+}

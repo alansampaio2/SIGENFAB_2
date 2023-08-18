@@ -1,0 +1,37 @@
+﻿@page "/deficiencias"
+
+<h3>Deficiencias</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary btn-sm" href="/deficiencias/cadastro">Nova Deficiencia</a>
+</div>
+
+<GenericList MinhaLista="Deficiencias">
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Cód.</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Deficiencias!)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Nome</td>
+                        <td>@item.Descricao</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning">Editar</button>
+                            <button class="btn btn-sm btn-danger">Excluir</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Body>
+</GenericList>

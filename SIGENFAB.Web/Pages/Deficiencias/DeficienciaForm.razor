@@ -1,0 +1,23 @@
+﻿
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <div class="mb-3">
+        <label>Nome</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Deficiencia.Nome"/>
+            <ValidationMessage For="@(() => Deficiencia.Nome)"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label>Descrição</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Deficiencia.Descricao" />
+            <ValidationMessage For="@(() => Deficiencia.Descricao)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary btn-sm" type="submit">Salvar Registro</button>
+    <button class="btn btn-success btn-sm" @onclick="ReturnAction">Retornar</button>
+</EditForm>
