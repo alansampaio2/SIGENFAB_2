@@ -1,0 +1,12 @@
+﻿@page "/estados/editar/{Id:int}"
+
+<h3>Editar Estado</h3>
+
+@if (estado is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <EstadoForm @ref="estadoForm" Estado="estado" OnValidSubmit="Edit" ReturnAction="Return" />
+}

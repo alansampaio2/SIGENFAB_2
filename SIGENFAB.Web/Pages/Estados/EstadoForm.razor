@@ -1,0 +1,23 @@
+﻿
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Nome</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Estado.Descricao" />
+            <ValidationMessage For="@(() => Estado.Descricao)" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label>Sigla</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Estado.Sigla" />
+            <ValidationMessage For="@(() => Estado.Sigla)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary btn-sm" type="submit">Salvar Registro</button>
+    <button class="btn btn-success btn-sm" @onclick="ReturnAction">Retornar</button>
+</EditForm>
