@@ -4,7 +4,7 @@ namespace SIGENFAB.Web.Pages.Deficiencias
 {
     public partial class DeficienciaInserir
     {
-        public Deficiencia Deficiencia { get; set; } = new();
+        public Deficiencia? Deficiencia { get; set; } = new();
         private DeficienciaForm? deficienciaForm;
 
         private async Task Create()

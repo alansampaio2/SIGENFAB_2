@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIGENFAB.API.Data;
 using SIGENFAB.Shared.Entities;
+using System;
 
 namespace SIGENFAB.API.Controllers
 {
@@ -27,8 +27,27 @@ namespace SIGENFAB.API.Controllers
         public async Task<ActionResult> Post(Deficiencia deficiencia)
         {
             _contexto.Add(deficiencia);
-            await _contexto.SaveChangesAsync();
-            return Ok(deficiencia);
+
+            try
+            {
+                await _contexto.SaveChangesAsync();
+                return Ok(deficiencia);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
+                {
+                    return BadRequest("Já existe uma deficiencia com esta mesmo nome.");
+                }
+                else
+                {
+                    return BadRequest(dbUpdateException.InnerException.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         [HttpGet("{id:int}")]
@@ -46,8 +65,26 @@ namespace SIGENFAB.API.Controllers
         public async Task<ActionResult> Put(Deficiencia deficiencia)
         {
             _contexto.Update(deficiencia);
-            await _contexto.SaveChangesAsync();
-            return Ok(deficiencia);
+            try
+            {
+                await _contexto.SaveChangesAsync();
+                return Ok(deficiencia);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
+                {
+                    return BadRequest("Já existe uma deficiencia com esta mesmo nome.");
+                }
+                else
+                {
+                    return BadRequest(dbUpdateException.InnerException.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]
@@ -57,7 +94,7 @@ namespace SIGENFAB.API.Controllers
             .Where(x => x.Id == id)
             .ExecuteDeleteAsync();
 
-        if (afectedRows == 0)
+            if (afectedRows == 0)
             {
                 return NotFound();
             }

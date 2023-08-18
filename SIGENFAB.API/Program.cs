@@ -12,8 +12,23 @@ builder.Services.AddSwaggerGen();
 
 //ADICIONAR O CONTEXTO
 builder.Services.AddDbContext<Contexto>(x=>x.UseSqlServer("name=DefaultConnection"));
+//ADICIONAR SEED
+builder.Services.AddTransient<SeedDb>();
 
 var app = builder.Build();
+
+SeedData(app);
+
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (IServiceScope? scope = scopedFactory!.CreateScope())
+    {
+        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
+        service!.SeedAsync().Wait();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

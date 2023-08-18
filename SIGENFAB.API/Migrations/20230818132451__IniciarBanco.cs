@@ -5,7 +5,7 @@
 namespace SIGENFAB.API.Migrations
 {
     /// <inheritdoc />
-    public partial class IniciarBanco : Migration
+    public partial class _IniciarBanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace SIGENFAB.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false)
+                    Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {

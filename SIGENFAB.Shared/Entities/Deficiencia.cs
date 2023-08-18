@@ -12,7 +12,7 @@ namespace SIGENFAB.Shared.Entities
         public string Nome { get; set; } = null!;
 
         [Display(Name = "Descrição")]
-        [MaxLength(150, ErrorMessage = "Máximo de 150 caracteres")]
+        [MaxLength(500, ErrorMessage = "Máximo de 500 caracteres")]
         public string Descricao { get; set; } = null!;
     }
 }

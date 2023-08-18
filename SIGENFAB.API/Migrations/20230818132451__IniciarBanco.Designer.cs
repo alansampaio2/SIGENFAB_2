@@ -11,8 +11,8 @@ using SIGENFAB.API.Data;
 namespace SIGENFAB.API.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20230817151555_IniciarBanco")]
-    partial class IniciarBanco
+    [Migration("20230818132451__IniciarBanco")]
+    partial class _IniciarBanco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,8 +34,8 @@ namespace SIGENFAB.API.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
