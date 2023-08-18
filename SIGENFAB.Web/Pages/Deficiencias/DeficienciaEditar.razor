@@ -1,0 +1,12 @@
+﻿@page "/deficiencias/editar/{Id:int}"
+
+<h3>Editar Deficiencia</h3>
+
+@if(deficiencia is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <DeficienciaForm @ref="deficienciaForm" Deficiencia="deficiencia" OnValidSubmit="Edit" ReturnAction="Return" />
+}

@@ -26,8 +26,8 @@
                         <td>@item.Nome</td>
                         <td>@item.Descricao</td>
                         <td>
-                            <button class="btn btn-sm btn-warning">Editar</button>
-                            <button class="btn btn-sm btn-danger">Excluir</button>
+                            <a href="/deficiencias/editar/@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                            <button @onclick=@(() => Delete(item)) class="btn btn-sm btn-danger">Excluir</button>
                         </td>
                     </tr>
                 }
