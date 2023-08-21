@@ -1,0 +1,28 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Logradouro:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Logradouro.Descricao" />
+            <ValidationMessage For="@(() => Logradouro.Descricao)" />
+        </div>
+        <label>CEP:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Logradouro.CEP" />
+            <ValidationMessage For="@(() => Logradouro.CEP)" />
+        </div>
+        <label>Longitude:</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@Logradouro.Longitude" />
+            <ValidationMessage For="@(() => Logradouro.Longitude)" />
+        </div>
+        <label>Latitude:</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@Logradouro.Latitude" />
+            <ValidationMessage For="@(() => Logradouro.Latitude)" />
+        </div>
+    </div>
+    <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+    <button class="btn btn-success btn-sm" @onclick="ReturnAction">Voltar</button>
+</EditForm>

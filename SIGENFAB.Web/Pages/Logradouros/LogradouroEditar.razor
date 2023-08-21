@@ -1,0 +1,11 @@
+﻿@page "/logradouros/editar/{LogradouroId:int}"
+
+<h3>Editar Logradouro</h3>
+@if (logradouro is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <LogradouroForm @ref="logradouroForm" Logradouro="logradouro" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

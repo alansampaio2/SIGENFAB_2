@@ -1,0 +1,4 @@
+﻿@page "/logradouros/cadastro/{BairroId:int}"
+
+<h3>Cadastrar Logradouro</h3>
+<LogradouroForm @ref="logradouroForm" Logradouro="logradouro" OnValidSubmit="CreateAsync" ReturnAction="Return" />

@@ -1,0 +1,11 @@
+﻿@page "/bairros/editar/{BairroId:int}"
+
+<h3>Editar Bairro</h3>
+@if (bairro is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <BairroForm @ref="bairroForm" Bairro="bairro" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

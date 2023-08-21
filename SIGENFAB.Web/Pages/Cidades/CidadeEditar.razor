@@ -1,0 +1,11 @@
+﻿@page "/cidades/editar/{CidadeId:int}"
+
+<h3>Editar Cidade</h3>
+@if (cidade is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <CidadeForm @ref="cidadeForm" Cidade="cidade" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

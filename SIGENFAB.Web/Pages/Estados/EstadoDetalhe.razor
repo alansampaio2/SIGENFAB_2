@@ -1,0 +1,50 @@
+﻿@page "/estados/detalhes/{Id:int}"
+
+<h3>EstadoDetalhe</h3>
+
+@if (Estado is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <h3>@Estado.Descricao</h3>
+    <h3>@Estado.Sigla</h3>
+    <div class="mb-2">
+        <a class="btn btn-primary btn-sm" href="/cidades/cadastro/@Estado.Id">Nova Cidade</a>
+        <a class="btn btn-success btn-sm" href="/estados">Voltar</a>
+    </div>
+
+    <GenericList MinhaLista="Cidades">
+        <Body>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cidade</th>
+                        <th>Bairros</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cidade in Cidades!)
+                    {
+                        <tr>
+                            <td>
+                                @cidade.Descricao
+                            </td>
+                            <td>
+                                @cidade.NumeroBairros
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-sm" href="/cidades/detalhes/@cidade.Id">Detalhes</a>
+                                <a class="btn btn-warning btn-sm" href="/cidades/editar/@cidade.Id">Editar</a>
+                                <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(cidade.Id))>Excluir</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </Body>
+    </GenericList>
+}

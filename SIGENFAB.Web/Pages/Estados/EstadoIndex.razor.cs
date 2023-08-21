@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using SIGENFAB.Shared.Entities;
 using SIGENFAB.Web.Repositories;
+using System.Diagnostics.Metrics;
 
 namespace SIGENFAB.Web.Pages.Estados
 {
@@ -11,15 +12,52 @@ namespace SIGENFAB.Web.Pages.Estados
 
         public List<Estado>? Estados { get; set; }
 
+        private int currentPage = 1;
+        private int totalPages;
+
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public string Page { get; set; } = "";
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public string Filter { get; set; } = "";
+
         protected override async Task OnInitializedAsync()
         {
-            await Load();
+            await LoadAsync();
         }
 
-        private async Task Load()
+        private async Task LoadAsync(int page = 1)
         {
-            var responseHttp = await repository.Get<List<Estado>>("api/estados");
-            Estados = responseHttp.Response!;
+            if (!string.IsNullOrWhiteSpace(Page))
+            {
+                page = Convert.ToInt32(Page);
+            }
+            string url1 = string.Empty;
+            string url2 = string.Empty;
+            if (string.IsNullOrEmpty(Filter))
+            {
+                url1 = $"api/estados?page={page}";
+                url2 = $"api/estados/totalPages";
+            }
+            else
+            {
+                url1 = $"api/estados?page={page}&filter={Filter}";
+                url2 = $"api/estados/totalPages?filter={Filter}";
+            }
+            var responseHppt = await repository.Get<List<Estado>>(url1);
+            var responseHppt2 = await repository.Get<int>(url2);
+            Estados = responseHppt.Response!;
+            totalPages = responseHppt2.Response!;
+
+            //var responseHttp = await repository.Get<List<Estado>>("api/estados");
+            //Estados = responseHttp.Response!;
+        }
+
+        private async Task SelectedPage(int page)
+        {
+            currentPage = page;
+            await LoadAsync(page);
         }
 
         private async Task Delete(Estado estado)
@@ -51,8 +89,20 @@ namespace SIGENFAB.Web.Pages.Estados
             }
             else
             {
-                await Load();
+                await LoadAsync();
             }
+        }
+
+        private async Task CleanFilterAsync()
+        {
+            Filter = string.Empty;
+            await ApplyFilterAsync();
+        }
+        private async Task ApplyFilterAsync()
+        {
+            int page = 1;
+            await LoadAsync(page);
+            await SelectedPage(page);
         }
     }
 }

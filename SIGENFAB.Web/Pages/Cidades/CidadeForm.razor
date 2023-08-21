@@ -1,0 +1,13 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Cidade:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Cidade.Descricao" />
+            <ValidationMessage For="@(() => Cidade.Descricao)" />
+        </div>
+    </div>
+    <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+    <button class="btn btn-success btn-sm" @onclick="ReturnAction">Voltar</button>
+</EditForm>

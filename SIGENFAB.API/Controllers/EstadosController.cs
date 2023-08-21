@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIGENFAB.API.Data;
+using SIGENFAB.API.Extensions;
+using SIGENFAB.Shared.DTOs;
 using SIGENFAB.Shared.Entities;
 
 namespace SIGENFAB.API.Controllers
@@ -18,11 +20,38 @@ namespace SIGENFAB.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(await _contexto.Estados
+            var queryable = _contexto.Estados
                 .Include(x => x.Cidades)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Descricao.ToLower().Contains(pagination.Filter.ToLower())
+                || x.Sigla.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return Ok(await queryable
+                .OrderBy(x => x.Descricao)
+                .Paginate(pagination)
                 .ToListAsync());
+        }
+
+        [HttpGet("totalPages")]
+        public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _contexto.Estados.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Descricao.ToLower().Contains(pagination.Filter.ToLower())
+                || x.Sigla.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+            double totalPages = Math.Ceiling(count / pagination.RecordsNumber);
+            return Ok(totalPages);
         }
 
         [HttpGet("full")]
@@ -65,7 +94,9 @@ namespace SIGENFAB.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> Get(int id)
         {
-            var country = await _contexto.Estados.FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _contexto.Estados
+                .Include(x => x.Cidades)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (country is null)
             {
                 return NotFound();

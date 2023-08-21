@@ -1,0 +1,4 @@
+﻿@page "/cidades/cadastro/{EstadoId:int}"
+
+<h3>Cadastrar Cidade</h3>
+<CidadeForm @ref="cidadeForm" Cidade="cidade" OnValidSubmit="CreateAsync" ReturnAction="Return" />
