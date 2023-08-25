@@ -6,21 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SIGENFAB.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Usuarios_Localizacao_Paciente : Migration
+    public partial class Iniciar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Sigla",
-                table: "Estados",
-                type: "nvarchar(2)",
-                maxLength: 2,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(100)",
-                oldMaxLength: 100);
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -33,6 +23,67 @@ namespace SIGENFAB.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UsuarioTipo = table.Column<int>(type: "int", nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Sobrenome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CNS = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Nascimento = table.Column<DateTime>(type: "datetime2", maxLength: 25, nullable: false),
+                    Sexo = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Deficiencias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deficiencias", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Estados",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Sigla = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Estados", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,123 +117,6 @@ namespace SIGENFAB.API.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AgentesSaude",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MicroId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgentesSaude", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Antropometrias",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
-                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Altura = table.Column<double>(type: "float", nullable: true),
-                    Peso = table.Column<double>(type: "float", nullable: true),
-                    ParimetroCefalico = table.Column<double>(type: "float", nullable: true),
-                    PerimetroAbdominal = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Antropometrias", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Areas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UnidadeId = table.Column<int>(type: "int", nullable: false),
-                    INE = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Areas", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UsuarioTipo = table.Column<int>(type: "int", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Sobrenome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CNS = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Nascimento = table.Column<DateTime>(type: "datetime2", maxLength: 25, nullable: false),
-                    Sexo = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    COREN_UF = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    AreaId = table.Column<int>(type: "int", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Areas_AreaId",
-                        column: x => x.AreaId,
-                        principalTable: "Areas",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_AspNetUsers_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Micros",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descricao = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    AreaId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Micros", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Micros_Areas_AreaId",
-                        column: x => x.AreaId,
-                        principalTable: "Areas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -273,32 +207,6 @@ namespace SIGENFAB.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Enfermeiros",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    COREN_UF = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    AreaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Enfermeiros", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Enfermeiros_Areas_AreaId",
-                        column: x => x.AreaId,
-                        principalTable: "Areas",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Enfermeiros_AspNetUsers_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pacientes",
                 columns: table => new
                 {
@@ -327,14 +235,257 @@ namespace SIGENFAB.API.Migrations
                     IdentidadeDeGenero = table.Column<int>(type: "int", nullable: false),
                     DataObito = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Obito = table.Column<bool>(type: "bit", nullable: false),
-                    DeclaracaoObito = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    MotivoObito = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    DeclaracaoObito = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    MotivoObito = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pacientes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Pacientes_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cidades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cidades", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cidades_Estados_EstadoId",
+                        column: x => x.EstadoId,
+                        principalTable: "Estados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Antropometrias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PacienteId = table.Column<int>(type: "int", nullable: false),
+                    Data = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Altura = table.Column<double>(type: "float", nullable: true),
+                    Peso = table.Column<double>(type: "float", nullable: true),
+                    ParimetroCefalico = table.Column<double>(type: "float", nullable: true),
+                    PerimetroAbdominal = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Antropometrias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Antropometrias_Pacientes_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Pacientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AtribuicaoDeficiencia",
+                columns: table => new
+                {
+                    PacienteId = table.Column<int>(type: "int", nullable: false),
+                    DeficienciaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AtribuicaoDeficiencia", x => new { x.DeficienciaId, x.PacienteId });
+                    table.ForeignKey(
+                        name: "FK_AtribuicaoDeficiencia_Deficiencias_DeficienciaId",
+                        column: x => x.DeficienciaId,
+                        principalTable: "Deficiencias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AtribuicaoDeficiencia_Pacientes_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Pacientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AtribuicaoGrupo",
+                columns: table => new
+                {
+                    PacienteId = table.Column<int>(type: "int", nullable: false),
+                    GrupoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AtribuicaoGrupo", x => new { x.GrupoId, x.PacienteId });
+                    table.ForeignKey(
+                        name: "FK_AtribuicaoGrupo_Grupos_GrupoId",
+                        column: x => x.GrupoId,
+                        principalTable: "Grupos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AtribuicaoGrupo_Pacientes_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Pacientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bairros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CidadeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bairros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bairros_Cidades_CidadeId",
+                        column: x => x.CidadeId,
+                        principalTable: "Cidades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Logradouros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CEP = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    BairroId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logradouros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Logradouros_Bairros_BairroId",
+                        column: x => x.BairroId,
+                        principalTable: "Bairros",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AgentesSaude",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MicroId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AgentesSaude", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AgentesSaude_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Areas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UnidadeId = table.Column<int>(type: "int", nullable: false),
+                    INE = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Areas", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Enfermeiros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    COREN_UF = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    AreaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enfermeiros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Enfermeiros_Areas_AreaId",
+                        column: x => x.AreaId,
+                        principalTable: "Areas",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Enfermeiros_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Micros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AreaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Micros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Micros_Areas_AreaId",
+                        column: x => x.AreaId,
+                        principalTable: "Areas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TecnicosEnfermagem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Matricula = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    COREN_UF = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    AreaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TecnicosEnfermagem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TecnicosEnfermagem_Areas_AreaId",
+                        column: x => x.AreaId,
+                        principalTable: "Areas",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TecnicosEnfermagem_AspNetUsers_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -396,54 +547,6 @@ namespace SIGENFAB.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AtribuicaoDeficiencia",
-                columns: table => new
-                {
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
-                    DeficienciaId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AtribuicaoDeficiencia", x => new { x.DeficienciaId, x.PacienteId });
-                    table.ForeignKey(
-                        name: "FK_AtribuicaoDeficiencia_Deficiencias_DeficienciaId",
-                        column: x => x.DeficienciaId,
-                        principalTable: "Deficiencias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AtribuicaoDeficiencia_Pacientes_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Pacientes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AtribuicaoGrupo",
-                columns: table => new
-                {
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
-                    GrupoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AtribuicaoGrupo", x => new { x.GrupoId, x.PacienteId });
-                    table.ForeignKey(
-                        name: "FK_AtribuicaoGrupo_Grupos_GrupoId",
-                        column: x => x.GrupoId,
-                        principalTable: "Grupos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AtribuicaoGrupo_Pacientes_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Pacientes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Residencias",
                 columns: table => new
                 {
@@ -471,12 +574,6 @@ namespace SIGENFAB.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logradouros_CEP",
-                table: "Logradouros",
-                column: "CEP",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AgentesSaude_MicroId",
@@ -537,27 +634,10 @@ namespace SIGENFAB.API.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_AreaId",
-                table: "AspNetUsers",
-                column: "AreaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_COREN_UF",
-                table: "AspNetUsers",
-                column: "COREN_UF",
-                unique: true,
-                filter: "[COREN_UF] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_CPF",
                 table: "AspNetUsers",
                 column: "CPF",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_UsuarioId",
-                table: "AspNetUsers",
-                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -575,6 +655,34 @@ namespace SIGENFAB.API.Migrations
                 name: "IX_AtribuicaoGrupo_PacienteId",
                 table: "AtribuicaoGrupo",
                 column: "PacienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bairros_CidadeId",
+                table: "Bairros",
+                column: "CidadeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bairros_Descricao_CidadeId",
+                table: "Bairros",
+                columns: new[] { "Descricao", "CidadeId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cidades_Descricao_EstadoId",
+                table: "Cidades",
+                columns: new[] { "Descricao", "EstadoId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cidades_EstadoId",
+                table: "Cidades",
+                column: "EstadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Deficiencias_Nome",
+                table: "Deficiencias",
+                column: "Nome",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Enderecos_Familia",
@@ -617,9 +725,32 @@ namespace SIGENFAB.API.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Estados_Descricao",
+                table: "Estados",
+                column: "Descricao",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Grupos_Nome",
                 table: "Grupos",
                 column: "Nome",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Logradouros_BairroId",
+                table: "Logradouros",
+                column: "BairroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Logradouros_CEP",
+                table: "Logradouros",
+                column: "CEP",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Logradouros_Descricao_BairroId",
+                table: "Logradouros",
+                columns: new[] { "Descricao", "BairroId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -654,12 +785,21 @@ namespace SIGENFAB.API.Migrations
                 table: "Residencias",
                 column: "PacienteId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AgentesSaude_AspNetUsers_UsuarioId",
-                table: "AgentesSaude",
-                column: "UsuarioId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
+            migrationBuilder.CreateIndex(
+                name: "IX_TecnicosEnfermagem_AreaId",
+                table: "TecnicosEnfermagem",
+                column: "AreaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TecnicosEnfermagem_COREN_UF",
+                table: "TecnicosEnfermagem",
+                column: "COREN_UF",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TecnicosEnfermagem_UsuarioId",
+                table: "TecnicosEnfermagem",
+                column: "UsuarioId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AgentesSaude_Micros_MicroId",
@@ -667,14 +807,6 @@ namespace SIGENFAB.API.Migrations
                 column: "MicroId",
                 principalTable: "Micros",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Antropometrias_Pacientes_PacienteId",
-                table: "Antropometrias",
-                column: "PacienteId",
-                principalTable: "Pacientes",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Areas_Enderecos_UnidadeId",
@@ -726,7 +858,13 @@ namespace SIGENFAB.API.Migrations
                 name: "Residencias");
 
             migrationBuilder.DropTable(
+                name: "TecnicosEnfermagem");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Deficiencias");
 
             migrationBuilder.DropTable(
                 name: "Grupos");
@@ -746,19 +884,17 @@ namespace SIGENFAB.API.Migrations
             migrationBuilder.DropTable(
                 name: "Enderecos");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Logradouros_CEP",
-                table: "Logradouros");
+            migrationBuilder.DropTable(
+                name: "Logradouros");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Sigla",
-                table: "Estados",
-                type: "nvarchar(100)",
-                maxLength: 100,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(2)",
-                oldMaxLength: 2);
+            migrationBuilder.DropTable(
+                name: "Bairros");
+
+            migrationBuilder.DropTable(
+                name: "Cidades");
+
+            migrationBuilder.DropTable(
+                name: "Estados");
         }
     }
 }

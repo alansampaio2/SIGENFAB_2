@@ -589,7 +589,6 @@ namespace SIGENFAB.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeclaracaoObito")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
@@ -614,7 +613,6 @@ namespace SIGENFAB.API.Migrations
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("MotivoObito")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -715,6 +713,42 @@ namespace SIGENFAB.API.Migrations
                     b.ToTable("Residencias");
                 });
 
+            modelBuilder.Entity("SIGENFAB.Shared.Entities.TecEnfermagem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AreaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("COREN_UF")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Matricula")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.HasIndex("COREN_UF")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("TecnicosEnfermagem");
+                });
+
             modelBuilder.Entity("SIGENFAB.Shared.Entities.Usuario", b =>
                 {
                     b.Property<string>("Id")
@@ -735,10 +769,6 @@ namespace SIGENFAB.API.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -818,10 +848,6 @@ namespace SIGENFAB.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Usuario");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("SIGENFAB.Shared.Entities.Domicilio", b =>
@@ -948,37 +974,6 @@ namespace SIGENFAB.API.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("Unidade");
-                });
-
-            modelBuilder.Entity("SIGENFAB.Shared.Entities.TecEnfermagem", b =>
-                {
-                    b.HasBaseType("SIGENFAB.Shared.Entities.Usuario");
-
-                    b.Property<int?>("AreaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("COREN_UF")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Matricula")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("AreaId");
-
-                    b.HasIndex("COREN_UF")
-                        .IsUnique()
-                        .HasFilter("[COREN_UF] IS NOT NULL");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.HasDiscriminator().HasValue("TecEnfermagem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1205,13 +1200,6 @@ namespace SIGENFAB.API.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("SIGENFAB.Shared.Entities.Domicilio", b =>
-                {
-                    b.HasOne("SIGENFAB.Shared.Entities.Micro", null)
-                        .WithMany("Domicilios")
-                        .HasForeignKey("MicroId");
-                });
-
             modelBuilder.Entity("SIGENFAB.Shared.Entities.TecEnfermagem", b =>
                 {
                     b.HasOne("SIGENFAB.Shared.Entities.Area", "Area")
@@ -1225,6 +1213,13 @@ namespace SIGENFAB.API.Migrations
                     b.Navigation("Area");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SIGENFAB.Shared.Entities.Domicilio", b =>
+                {
+                    b.HasOne("SIGENFAB.Shared.Entities.Micro", null)
+                        .WithMany("Domicilios")
+                        .HasForeignKey("MicroId");
                 });
 
             modelBuilder.Entity("SIGENFAB.Shared.Entities.Area", b =>

@@ -7,7 +7,6 @@ namespace SIGENFAB.Shared.Entities
     public class Paciente : IPessoa
     {
         public int Id { get; set; }
-        public string? UsuarioId { get; set; }
         public Usuario? Usuario { get; set; }
 
         [Display(Name = "Nome")]
@@ -71,11 +70,11 @@ namespace SIGENFAB.Shared.Entities
 
         [Display(Name = "Declaração de Óbito")]
         [MaxLength(150, ErrorMessage = "O campo {0} deve ter ao máximo {1} caracteres.")]
-        public string DeclaracaoObito { get; set; } = null!;
+        public string? DeclaracaoObito { get; set; } = null!;
 
         [Display(Name = "Motivo do Óbito")]
         [MaxLength(250, ErrorMessage = "O campo {0} deve ter ao máximo {1} caracteres.")]
-        public string MotivoObito { get; set; } = null!;
+        public string? MotivoObito { get; set; } = null!;
 
         public ICollection<Antropometria>? Antropometrias { get; set; }
     }

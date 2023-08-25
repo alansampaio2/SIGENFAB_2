@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SIGENFAB.Shared.Entities
 {
-    public class TecEnfermagem : Usuario, IFuncionario
+    public class TecEnfermagem : IFuncionario
     {
         public int Id { get; set; }
         public Usuario? Usuario { get; set; }
