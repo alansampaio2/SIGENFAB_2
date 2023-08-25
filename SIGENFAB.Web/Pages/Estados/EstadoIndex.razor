@@ -26,14 +26,14 @@
 
 <GenericList MinhaLista="Estados">
     <Body>
-        <table class="table table-striped">
+        <table class="table table-striped table-sm">
             <thead>
                 <tr>
-                    <th>Cód.</th>
+                    <th style="width:60px">Cód.</th>
                     <th>Nome</th>
-                    <th>Sigla</th>
-                    <th>Cidades</th>
-                    <th>Bairros</th>
+                    <th style="text-align:center">Sigla</th>
+                    <th style="text-align:center">Cidades</th>
+                    <th style="text-align:center">Bairros</th>
                     <th style="width:220px"></th>
                 </tr>
             </thead>
@@ -44,9 +44,9 @@
                     <tr>
                         <td>@item.Id</td>
                         <td>@item.Descricao</td>
-                        <td>@item.Sigla</td>
-                        <td>@item.NumeroCidades</td>
-                        <td>@item.NumeroBairros</td>
+                        <td style="text-align:center">@item.Sigla</td>
+                        <td style="text-align:center">@item.NumeroCidades</td>
+                        <td style="text-align:center">@item.NumeroBairros</td>
                         <td>
                             <a href="/estados/detalhes/@item.Id" class="btn btn-info btn-sm">Detalles</a>
                             <a href="/estados/editar/@item.Id" class="btn btn-sm btn-warning">Editar</a>

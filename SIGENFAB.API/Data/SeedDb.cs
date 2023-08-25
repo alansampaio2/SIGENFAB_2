@@ -4,16 +4,22 @@ using SIGENFAB.Shared.Entities;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System;
+using SIGENFAB.API.Managers;
+using Microsoft.AspNetCore.Identity;
+using SIGENFAB.Shared.Enums;
+using SIGENFAB.Shared.Constatntes;
 
 namespace SIGENFAB.API.Data
 {
     public class SeedDb
     {
         private readonly Contexto _context;
+        private readonly IUsuarioManager _userManager;
 
-        public SeedDb(Contexto context)
+        public SeedDb(Contexto context, IUsuarioManager userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task SeedAsync()
@@ -21,6 +27,69 @@ namespace SIGENFAB.API.Data
             await _context.Database.EnsureCreatedAsync();
             await InserirDeficienciasAsync();
             await InserirEstados();
+            await InserirUnidades();
+            await VerificarFuncoesAsync();
+
+            var usuarioEnfermeiro = await VerificarUsuario(UsuarioTipo.Enfermeiro, "Arnol", "Calixto Oliveira Neto", "014.164.915-11", "700.9079.3500.6691",
+                new DateTime(1985, 4, 17), Sexo.MASCULINO, FuncaoConstante.Enfermeiro);
+            var usuarioTecEnfermagem = await VerificarUsuario(UsuarioTipo.TecEnfermagem, "Viviane", "Da Silva Martin Canuto", "016.125.185-40", "700.5057.6643.0957",
+                new DateTime(1982, 3, 21), Sexo.FEMININO, FuncaoConstante.TecEnfermagem);
+            var usuarioACS = await VerificarUsuario(UsuarioTipo.ACS, "Roberto", "De Jesus Ramos", "001.372.415-00", "701.0028.9588.0290",
+                new DateTime(1981, 6, 3), Sexo.MASCULINO, FuncaoConstante.ACS);
+            var usuarioAdministrador = await VerificarUsuario(UsuarioTipo.Administrador, "Alan", "Mangueira Sampaio", "975.199.955-34", "705.0030.6046.8457",
+                new DateTime(1978, 7, 19), Sexo.MASCULINO, FuncaoConstante.Administrador);
+
+            var usuarioPacienteAdultoMas = await VerificarUsuario(UsuarioTipo.Paciente, "Roberto", "De Jesus Ramos", "001.372.415-00", "701.0028.9588.0290",
+                new DateTime(1981, 6, 3), Sexo.MASCULINO, FuncaoConstante.Paciente);
+            var usuarioPacienteAdultoFem = await VerificarUsuario(UsuarioTipo.Paciente, "Fernanda", "Tavares de Araújo de Alcantra", "366.008.178-79", "706.2025.3902.3764",
+                new DateTime(1988, 10, 15), Sexo.FEMININO, FuncaoConstante.Paciente);
+            var usuarioPacienteIdosoMasc = await VerificarUsuario(UsuarioTipo.Paciente, "José", "Carlos Dos Santos", "840.595.325-68", "700.2019.4719.3727",
+                new DateTime(1954, 1, 20), Sexo.MASCULINO, FuncaoConstante.Paciente);
+            var usuarioPacienteIdosoFem = await VerificarUsuario(UsuarioTipo.Paciente, "Maria", "José Bispo Dos Santos", "454.791.660-85", "700.5071.7655.2851",
+                new DateTime(1967, 5, 20), Sexo.FEMININO, FuncaoConstante.Paciente);
+
+            if (!_context.Pacientes.Any())
+            {
+                await InserirPaciente(null, "114.396.275-33", "702.1087.2276.9692", "Júlia", "Olivaira Silva dos Santos", "Cláudia Betania Silva dos Santos",
+                    "Cleverton Oliveira Santos", new DateTime(2019, 8, 4), "", Escolaridade.ANALFABETO, Sexo.FEMININO, EstadoCivil.Solteiro, IdentidadeDeGenero.NAO_INFORMADO,
+                    OrientacaoSexual.NAO_INFORMADO, RacaCor.PARDA, "", true, false, StatusMercadoDeTrabalho.NENHUM, false, "");
+
+                await InserirPaciente(usuarioPacienteAdultoMas, usuarioPacienteAdultoMas.CPF, usuarioPacienteAdultoMas.CNS, usuarioPacienteAdultoMas.Nome,
+                    usuarioPacienteAdultoMas.Sobrenome, "Maria do Carmo de Jesus Ramos", "Eronildes de Jesus Ramos", usuarioPacienteAdultoMas.Nascimento,
+                    "", Escolaridade.FUNDAMENTAL_COMPLETO, Sexo.MASCULINO, EstadoCivil.Uniao_Estavel, IdentidadeDeGenero.NAO_INFORMADO, OrientacaoSexual.NAO_INFORMADO,
+                    RacaCor.PARDA, "", false, false, StatusMercadoDeTrabalho.ASSALARIADO_SEM_CARTEIRA, false, "");
+
+                await InserirPaciente(usuarioPacienteAdultoFem, usuarioPacienteAdultoFem.CPF, usuarioPacienteAdultoFem.CNS, usuarioPacienteAdultoFem.Nome,
+                    usuarioPacienteAdultoFem.Sobrenome, "Tania Tavares dos Santos", "Osmário dos Santos Araújo", usuarioPacienteAdultoFem.Nascimento,
+                    "", Escolaridade.MEDIO_INCOMPLETO, Sexo.FEMININO, EstadoCivil.Solteiro, IdentidadeDeGenero.NAO_INFORMADO, OrientacaoSexual.HETERESSEXUAL,
+                    RacaCor.PARDA, "", false, false, StatusMercadoDeTrabalho.ASSALARIADO_SEM_CARTEIRA, false, "");
+
+                await InserirPaciente(usuarioPacienteIdosoMasc, usuarioPacienteIdosoMasc.CPF, usuarioPacienteIdosoMasc.CNS, usuarioPacienteIdosoMasc.Nome,
+                    usuarioPacienteIdosoMasc.Sobrenome, "Maria Joana dos Santos", "", usuarioPacienteIdosoMasc.Nascimento,
+                    "", Escolaridade.MEDIO_INCOMPLETO, Sexo.MASCULINO, EstadoCivil.Viuvo, IdentidadeDeGenero.NAO_INFORMADO, OrientacaoSexual.HETERESSEXUAL,
+                    RacaCor.PARDA, "", false, false, StatusMercadoDeTrabalho.APOSENTADO_PENSIONISTA, false, "");
+
+                await InserirPaciente(usuarioPacienteIdosoMasc, usuarioPacienteIdosoMasc.CPF, usuarioPacienteIdosoMasc.CNS, usuarioPacienteIdosoMasc.Nome,
+                    usuarioPacienteIdosoMasc.Sobrenome, "Josefa Bispo dos Santos", "Durval Bispo dos Santos", usuarioPacienteIdosoMasc.Nascimento,
+                    "", Escolaridade.MEDIO_INCOMPLETO, Sexo.FEMININO, EstadoCivil.Casado, IdentidadeDeGenero.NAO_INFORMADO, OrientacaoSexual.HETERESSEXUAL,
+                    RacaCor.PARDA, "", false, false, StatusMercadoDeTrabalho.APOSENTADO_PENSIONISTA, false, "");
+            }
+
+            if (!_context.Enfermeiros.Any())
+            {
+                await InserirEnfermeiroAdministrador(usuarioAdministrador, "123456", "121119", null);
+                await InserirEnfermeiro(usuarioEnfermeiro, "123456", "546987", null);
+            }
+
+            if (!_context.TecnicosEnfermagem.Any())
+            {
+                await InserirTecEnfermagem(usuarioTecEnfermagem, "456987", "514236", null);
+            }
+
+            if (!_context.AgentesSaude.Any())
+            {
+                await InserirACS(usuarioACS, "123456", null);
+            }
         }
 
         private async Task InserirDeficienciasAsync()
@@ -32,6 +101,96 @@ namespace SIGENFAB.API.Data
                 _context.Deficiencias.Add(new Deficiencia { Nome = "Intelectual/Cognitiva", Descricao = "funcionamento intelectual significativamente inferior à média, com manifestação antes dos 18 anos e limitações associadas a duas ou mais habilidades adaptativas" });
                 _context.Deficiencias.Add(new Deficiencia { Nome = "Visual", Descricao = "" });
             }
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirPaciente(Usuario? usuario, string cpf, string cns, string nome, string sobrenome, string mae, string pai, DateTime nascimento,
+            string nis, Escolaridade escolaridade, Sexo sexo, EstadoCivil estadoCivil, IdentidadeDeGenero identidadeDeGenero, OrientacaoSexual orientacaoSexual,
+            RacaCor racaCor, string ocupacao, bool frequentaEscola, bool frequentaCreche, StatusMercadoDeTrabalho statusMercadoDeTrabalho, bool planoDeSaude,
+            string nomeSocial)
+        {
+            var paciente = new Paciente
+            {
+                Usuario = usuario,
+                CNS = cns,
+                CPF = cpf,
+                Mae = mae,
+                Pai = pai,
+                Nascimento = nascimento,
+                Nome = nome,
+                Sobrenome = sobrenome,
+                NIS = nis,
+                Escolaridade = escolaridade,
+                IdentidadeDeGenero = identidadeDeGenero,
+                EstadoCivil = estadoCivil,
+                Sexo = sexo,
+                OrientacaoSexual = orientacaoSexual,
+                Ocupacao = ocupacao,
+                RacaCor = racaCor,
+                FrequentaEscola = frequentaEscola,
+                FrequentaCreche = frequentaCreche,
+                StatusMercadoDeTrabalho = statusMercadoDeTrabalho,
+                PlanoDeSaude = planoDeSaude,
+                NomeSocial = nomeSocial,
+                UsuarioId = usuario != null ? null : usuario!.Id,
+            };
+
+            await _context.Pacientes.AddAsync(paciente);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirEnfermeiro(Usuario? usuario, string matricula, string coren_uf, int? area_id)
+        {
+            var enfermeiro = new Enfermeiro()
+            {
+                AreaId = area_id,
+                COREN_UF = coren_uf,
+                Matricula = matricula,
+                Usuario = usuario,
+            };
+
+            await _context.Enfermeiros.AddAsync(enfermeiro);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirEnfermeiroAdministrador(Usuario? usuario, string matricula, string coren_uf, int? area_id)
+        {
+            var admin = new Enfermeiro()
+            {
+                AreaId = area_id,
+                COREN_UF = coren_uf,
+                Matricula = matricula,
+                Usuario = usuario,
+            };
+
+            await _context.Enfermeiros.AddAsync(admin);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirTecEnfermagem(Usuario? usuario, string matricula, string coren_uf, int? area_id)
+        {
+            var tecnico = new TecEnfermagem()
+            {
+                AreaId = area_id,
+                COREN_UF = coren_uf,
+                Matricula = matricula,
+                Usuario = usuario,
+            };
+
+            await _context.TecnicosEnfermagem.AddAsync(tecnico);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirACS(Usuario? usuario, string matricula, int? micro_id)
+        {
+            var acs = new AgenteSaude()
+            {
+                MicroId = micro_id,
+                Matricula = matricula,
+                Usuario = usuario,
+            };
+
+            await _context.AgentesSaude.AddAsync(acs);
             await _context.SaveChangesAsync();
         }
 
@@ -63,17 +222,17 @@ namespace SIGENFAB.API.Data
                 _context.Estados.Add(new Estado { Descricao = "Roraima", Sigla = "" });
                 _context.Estados.Add(new Estado { Descricao = "Rio Grande do Sul", Sigla = "" });
                 _context.Estados.Add(new Estado { Descricao = "Santa Catarina", Sigla = "" });
-                _context.Estados.Add(new Estado 
-                { 
-                    Descricao = "Sergipe", 
+                _context.Estados.Add(new Estado
+                {
+                    Descricao = "Sergipe",
                     Sigla = "",
                     Cidades = new List<Cidade>()
                     {
                         new Cidade { Descricao = "Altos Verdes (Carira)" },
                         new Cidade { Descricao = "Amparo de São Francisco" },
                         new Cidade { Descricao = "Aquidabã" },
-                        new Cidade 
-                        { 
+                        new Cidade
+                        {
                             Descricao = "Aracaju",
                             Bairros = new List<Bairro>()
                             {
@@ -99,8 +258,8 @@ namespace SIGENFAB.API.Data
                                 new Bairro { Descricao = "Jardins" },
                                 new Bairro { Descricao = "José Conrado de Araújo" },
                                 new Bairro { Descricao = "Lamarão" },
-                                new Bairro 
-                                { 
+                                new Bairro
+                                {
                                     Descricao = "Luzia",
                                     Logradouros = new List<Logradouro>()
                                     {
@@ -284,7 +443,14 @@ namespace SIGENFAB.API.Data
                                 new Bairro { Descricao = "Olaria" },
                                 new Bairro { Descricao = "Palestina" },
                                 new Bairro { Descricao = "Pereira Lobo" },
-                                new Bairro { Descricao = "Ponto Novo" },
+                                new Bairro
+                                {
+                                    Descricao = "Ponto Novo",
+                                    Logradouros = new List<Logradouro>()
+                                    {
+                                        new Logradouro { CEP = "49097-000", Descricao = "Avenida São João Batista", Longitude = -37.0779354, Latitude = -10.9310735 },
+                                    }
+                                },
                                 new Bairro { Descricao = "Porto DAntas" },
                                 new Bairro { Descricao = "Salgado Filho" },
                                 new Bairro { Descricao = "Santa Maria" },
@@ -388,6 +554,83 @@ namespace SIGENFAB.API.Data
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        private async Task InserirUnidades()
+        {
+            if (!_context.Unidades.Any())
+            {
+                var unidade = new Unidade
+                {
+                    LogradouroId = _context.Logradouros.FirstOrDefault(x => x.CEP == "49097-000")!.Id,
+                    CNES = "0002461",
+                    Nome = "US Fernando Sampaio",
+                    Numero = "986",
+                    Complemento = "Castelo Branco",
+                    ImovelTipo = ImovelTipo.UNIDADE_DE_SAUDE,
+                    Latitude = 0.0,
+                    Longitude = 0.0,
+                    SemNumero = false,
+                    Celular = "",
+                    Telefone = "(79)3179-1095",
+                    Email = "ubs.fernandosampaio@aracaju.se.gov.br",
+                    PontoDeReferencia = "",
+                    WhatsApp = "",
+                    Areas = new List<Area>()
+                {
+                    new Area()
+                    {
+                        Descricao = "050",
+                        Nome = "Eucalyptos",
+                        INE = "0000172235",
+                        Micros = new List<Micro>()
+                        {
+                            new Micro() { Descricao = "01"},
+                            new Micro() { Descricao = "02"},
+                            new Micro() { Descricao = "03"},
+                            new Micro() { Descricao = "04"},
+                            new Micro() { Descricao = "05"},
+                        }
+                    }
+                }
+                };
+
+                await _context.Unidades.AddAsync(unidade);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task<Usuario> VerificarUsuario(UsuarioTipo tipo, string nome, string sobrenome, string cpf, string cns, DateTime nascimento, Sexo sexo, string nomeDaFuncao)
+        {
+            var usuario = await _userManager.SelecionaUsuarioAsync(cpf);
+            if (usuario != null)
+            {
+                usuario = new Usuario
+                {
+                    IsActive = true,
+                    CPF = cpf,
+                    Nome = nome,
+                    Sobrenome = sobrenome,
+                    Nascimento = nascimento,
+                    CNS = cns,
+                    Sexo = sexo,
+                    UserName = cpf,
+                };
+
+                await _userManager.AdicionarUsuarioAsync(usuario, "123456");
+                await _userManager.AdicionarUsuarioParaFuncao(usuario, nomeDaFuncao);
+            }
+
+            return usuario!;
+        }
+
+        private async Task VerificarFuncoesAsync()
+        {
+            await _userManager.VerificarFuncaoAsync(FuncaoConstante.ACS);
+            await _userManager.VerificarFuncaoAsync(FuncaoConstante.Administrador);
+            await _userManager.VerificarFuncaoAsync(FuncaoConstante.Enfermeiro);
+            await _userManager.VerificarFuncaoAsync(FuncaoConstante.Paciente);
+            await _userManager.VerificarFuncaoAsync(FuncaoConstante.TecEnfermagem);
         }
     }
 }

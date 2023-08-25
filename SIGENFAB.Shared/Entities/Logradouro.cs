@@ -17,6 +17,7 @@ namespace SIGENFAB.Shared.Entities
         public string CEP { get; set; } = null!;
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
         public int BairroId { get; set; }
 
         public Bairro? Bairro { get; set; }

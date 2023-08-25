@@ -12,7 +12,7 @@ namespace SIGENFAB.Shared.Entities
         public string Descricao { get; set; } = null!;
 
         [Display(Name = "Sigla")]
-        [MaxLength(100, ErrorMessage = "O campo {0} deve ter ao máximo {1} caracteres.")]
+        [MaxLength(2, ErrorMessage = "O campo {0} deve ter ao máximo {1} caracteres.")]
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
         public string Sigla { get; set; } = null!;
 

@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SIGENFAB.API.Data;
+using SIGENFAB.API.Managers;
+using SIGENFAB.Shared.Entities;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<Contexto>(x=>x.UseSqlServer("name=DefaultConnection"));
 //ADICIONAR SEED
 builder.Services.AddTransient<SeedDb>();
+
+//IDENTIDADE
+builder.Services.AddIdentity<Usuario, IdentityRole>(x =>
+{
+    x.User.RequireUniqueEmail = true;
+    x.Password.RequireDigit = false;
+    x.Password.RequiredUniqueChars = 0;
+    x.Password.RequireLowercase = false;
+    x.Password.RequireNonAlphanumeric = false;
+    x.Password.RequireUppercase = false;
+})
+    .AddEntityFrameworkStores<Contexto>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUsuarioManager, UsuarioManager>();
 
 var app = builder.Build();
 
@@ -40,7 +58,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
