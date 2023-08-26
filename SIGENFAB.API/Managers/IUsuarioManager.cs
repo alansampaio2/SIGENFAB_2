@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SIGENFAB.Shared.DTOs;
 using SIGENFAB.Shared.Entities;
 
 namespace SIGENFAB.API.Managers
@@ -10,5 +11,7 @@ namespace SIGENFAB.API.Managers
         Task VerificarFuncaoAsync(string nomeDaFuncao);
         Task AdicionarUsuarioParaFuncao(Usuario usuario, string nomeDaFuccao);
         Task<bool> UsuarioEstaNaFuncao(Usuario usuario, string nomeDaFuncao);
+        Task<SignInResult> LoginAsync(LoginDTO model);
+        Task LogoutAsync();
     }
 }

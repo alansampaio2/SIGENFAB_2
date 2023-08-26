@@ -45,10 +45,19 @@ namespace SIGENFAB.Web.Pages.Estados
                 url1 = $"api/estados?page={page}&filter={Filter}";
                 url2 = $"api/estados/totalPages?filter={Filter}";
             }
-            var responseHppt = await repository.Get<List<Estado>>(url1);
-            var responseHppt2 = await repository.Get<int>(url2);
-            Estados = responseHppt.Response!;
-            totalPages = responseHppt2.Response!;
+
+            try
+            {
+                var responseHppt = await repository.Get<List<Estado>>(url1);
+                var responseHppt2 = await repository.Get<int>(url2);
+                Estados = responseHppt.Response!;
+                totalPages = responseHppt2.Response!;
+            }
+            catch (Exception ex)
+            {
+                await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+            }
+            
 
             //var responseHttp = await repository.Get<List<Estado>>("api/estados");
             //Estados = responseHttp.Response!;

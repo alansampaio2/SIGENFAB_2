@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SIGENFAB.API.Data;
+using SIGENFAB.Shared.DTOs;
 using SIGENFAB.Shared.Entities;
 
 namespace SIGENFAB.API.Managers
@@ -10,12 +11,14 @@ namespace SIGENFAB.API.Managers
         private readonly Contexto _contexto;
         private readonly UserManager<Usuario> _manager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<Usuario> _signInManager;
 
-        public UsuarioManager(Contexto contexto, UserManager<Usuario> manager, RoleManager<IdentityRole> roleManager)
+        public UsuarioManager(Contexto contexto, UserManager<Usuario> manager, RoleManager<IdentityRole> roleManager, SignInManager<Usuario> signInManager)
         {
             _contexto = contexto;
             _manager = manager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         public Task<IdentityResult> AdicionarUsuarioAsync(Usuario usuario, string senha)
@@ -54,6 +57,16 @@ namespace SIGENFAB.API.Managers
                     Name = nomeDaFuncao
                 });
             }
+        }
+
+        public async Task<SignInResult> LoginAsync(LoginDTO model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.CPF, model.Password, false, false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }
